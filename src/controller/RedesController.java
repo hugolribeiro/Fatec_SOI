@@ -77,9 +77,6 @@ public class RedesController {
 		// Armazenará o Ethernet atual
 		String ethernet = "";
 		
-		// Verificará se estou dentro do Ethernet ainda
-		boolean inside_ethernet = false;
-		
 		// Armazenará o IPv4 momentaneamente
 		String ipv4 = "";
 		
@@ -114,6 +111,42 @@ public class RedesController {
 				buffer.close();
 				leitor.close();
 				fluxo.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// Se os for linux
+		else {
+			
+			String comando = "ifconfig";
+			
+			try {
+				Process processo = Runtime.getRuntime().exec(comando);
+				InputStream fluxo = processo.getInputStream();
+				InputStreamReader leitor = new InputStreamReader(fluxo);
+				BufferedReader buffer = new BufferedReader(leitor);
+				String linha = buffer.readLine();
+				
+				while (linha != null) {
+					
+					// Checará se a linha contém flags
+					if (linha.contains("flags=")) {
+						ethernet = linha;
+					}
+					
+					if (linha.contains("netmask")) {
+						ipv4 = linha;
+						ipfiltrado += ethernet + "\n" + ipv4 +"\n\n";
+					}
+					
+					linha = buffer.readLine();
+					
+				}
+				System.out.println(ipfiltrado);		
+				buffer.close();
+				leitor.close();
+				fluxo.close();
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
