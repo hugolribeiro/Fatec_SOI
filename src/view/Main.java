@@ -37,7 +37,7 @@ public class Main {
 				break;
 			
 			case 2:
-				System.out.println("Fazendo...");
+				redcontroller.ip(os);;
 				break;
 			
 			case 3:
